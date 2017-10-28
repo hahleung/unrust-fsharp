@@ -1,0 +1,1 @@
+let sumTwoSmallestNumbers numbers = 0L
