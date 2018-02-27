@@ -3,7 +3,8 @@ let powersOfTwo (n:int) : int list =
     |> Seq.map(fun x -> pown 2 x)
     |> Seq.toList
 
-powersOfTwo 4
+// Test cases:
+// powersOfTwo 4
 
 // Or list comprehension:
 // let powersOfTwo n = [for i in 0..n -> pown 2 i]

@@ -13,5 +13,6 @@ let isArmstrong (number:int) =
 
     armstrongReflection = number
 
-isArmstrong 123
-isArmstrong 153
+// Test cases:
+// isArmstrong 123 // false
+// isArmstrong 153 // true
