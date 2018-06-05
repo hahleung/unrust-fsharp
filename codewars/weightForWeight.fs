@@ -16,16 +16,20 @@
 // Don't modify the input
 // For C: The result is freed.
 
-// let orderWeight(s: string) : string =
-let orderWeight(weights: string) =
-    weights.Split([|' '|])
-
-
 // Tasks breakdown:
 // 1- sanitize input, get the original numbers
 // 2- get the transformation by "weight"
 // 3- order the original numbers based on this transformation
 // Thought: 2 and 3 should be done in the same time for perf consideration
 
+let getBiasedWeight (originalWeight: string) : int =
+    originalWeight |> Seq.sumBy (string >> int)
+
+let orderWeight(weights: string) : string =
+    weights.Split([|' '|])
+    |> Seq.sortBy (fun weight -> (getBiasedWeight weight, weight))
+    |> String.concat " "
+
 // Test cases
-orderWeight "56 65 74 100 99 68 86 180 90"
+// "100 180 90 56 65 74 68 86 99"
+orderWeight "56 65 74 100 99 68 86 180 90" |> printfn "%A"
