@@ -11,7 +11,7 @@
 // The functions in 1) are not tested in Fortran and not tested in Shell.
 // Examples:
 // john(11) -->  [0, 0, 1, 2, 2, 3, 4, 4, 5, 6, 6]
-// ann(6) -->  [1, 1, 2, 2, 3, 3]
+// ann(6)   -->  [1, 1, 2, 2, 3, 3]
 // sum_john(75) -->  1720
 // sum_ann(150) -->  6930
 // Shell Note:
@@ -24,40 +24,44 @@
 // Note:
 // Keep an eye on performance.
 
-let john(n) = n
-let ann(n) = n
+// Accumlator as Seq (too slow)
+// let getSuite (n: int) =
+//     let seed = (0, 1, 0)
+//     let getStats ((n, oldAnn, oldJohn), suite) number =
+//         let (_, aj, _) = suite |> Seq.find (fun (n, _, _) -> n = oldJohn)
+//         let j = number - aj
 
-let sumJohn(n) = n
-let sumAnn(n) = n
+//         let updatedSuite = Seq.append [|(number, 0, j)|] suite
+//         let (_, _, ja) = updatedSuite |> Seq.find (fun (n, _, _) -> n = oldAnn)
+//         let a = number - ja
 
+//         let stat = (number, a, j)
+//         (stat, Seq.append suite [|stat|])
+//     Seq.fold getStats (seed, seq [seed]) (seq {1..n-1})
 
-// module Tests = begin
-//     open Fuchu
-//     let testAnn n expectedOutput = 
-//         Assert.Equal("", expectedOutput, ann(n))
-//     let testJohn n expectedOutput = 
-//         Assert.Equal("", expectedOutput, john(n))
-//     let testSumJohn n expectedOutput = 
-//         Assert.Equal("", expectedOutput, sumJohn(n))
-//     let testSumAnn n expectedOutput = 
-//         Assert.Equal("", expectedOutput, sumAnn(n))
-//     let suite =
-//         testList "johnann kata" [
-//             testCase "should return the result for ann" <| (fun _ ->
-//                 testAnn 6  [1; 1; 2; 2; 3; 3]
-//                 testAnn 15 [1; 1; 2; 2; 3; 3; 4; 5; 5; 6; 6; 7; 8; 8; 9]
-//             );
-//             testCase "should return the result for john" <| (fun _ ->
-//                 testJohn 11 [0; 0; 1; 2; 2; 3; 4; 4; 5; 6; 6]
-//                 testJohn 14 [0; 0; 1; 2; 2; 3; 4; 4; 5; 6; 6; 7; 7; 8]
-//             );
-//             testCase "should return the result for sumJohn" <| (fun _ ->
-//                 testSumJohn 75 1720
-//                 testSumJohn 78  1861
-//             );
-//             testCase "should return the result for sumAnn" <| (fun _ ->
-//                 testSumAnn 115 4070
-//                 testSumAnn 150 6930
-//             );
-//         ]
-// end
+let getSuite (n : int) =
+    let seed = (1, 0)
+    let getStats ((oldAnn : int, oldJohn : int), suite : Map<int, (int * int)>) number =
+        let (aj, _) = suite.[oldJohn]
+        let j = number - aj
+
+        let updatedSuite = suite.Add(number, (0, j))
+        let (_, ja) = updatedSuite.[oldAnn]
+        let a = number - ja
+
+        let stat = (a, j)
+        (stat, suite.Add(number, stat))
+    let (_, stats) = Seq.fold getStats (seed, Map.empty.Add(0, seed)) (seq {1..n-1})
+    stats |> Map.toList |> List.map (fun (_k, v) -> v)
+
+let john(n : int) = getSuite(n) |> List.map (fun (_ann, john) -> john)
+let ann(n : int) = getSuite(n) |> List.map (fun (ann, _john) -> ann)
+
+let sumJohn(n) = john(n) |> List.sum
+let sumAnn(n) = ann(n) |> List.sum
+
+getSuite 3 |> printfn "%A"
+john 11 |> printfn "%A"
+ann 11 |> printfn "%A"
+sumJohn 75 |> printfn "%A"
+sumAnn 150 |> printfn "%A"
