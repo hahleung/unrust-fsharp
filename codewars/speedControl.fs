@@ -10,46 +10,14 @@
 // With floats it can happen that results depends on the operations order. To calculate hourly speed you can use:
 // (3600 * delta_distance) / s.
 
-let gps (s : int) (distances : list<double>) =
-    let getLocalAverageSpeed (newPoint : double) (lastPoint : double) =
-        (double 3600) * (newPoint - lastPoint) / double s
-
-    let addLocalSpeed (newPoint : double) (lastPoint : double) (speeds : list<double>) =
-        let localAverageSpeed = getLocalAverageSpeed newPoint lastPoint
-        // System.Console.WriteLine(localAverageSpeed)
-        // (averageSpeed * double pointsCount + localAverageSpeed) / double (pointsCount + 1)
-        localAverageSpeed :: speeds
-
-    let rec doGps (list : list<double>) (lastPoint : double) (speeds : list<double>) =
+let gps (deltaT : int) (distances : list<double>) : int =
+    let rec doGps (list : list<double>) (lastPoint : double) (maxSpeed : double) : int =
         match list with
-        | head :: tail ->
-            let newAverageSpeed = addLocalSpeed head lastPoint speeds
-            doGps tail head newAverageSpeed
-        | [] -> speeds |> List.max |> int
+        | currentPoint :: restSpeeds ->
+            let localAverageSpeed = (double 3600) * (currentPoint - lastPoint) / double deltaT
+            doGps restSpeeds currentPoint (max localAverageSpeed maxSpeed)
+        | [] -> int maxSpeed
 
     match distances with
-    | [] -> 0
-    | distances when List.length distances = 1 -> 0
-    | initialPoint :: records -> doGps records initialPoint []
-
-// let x1 : list<double> = [0.0; 0.19; 0.5; 0.75; 1.0; 1.25; 1.5; 1.75; 2.0; 2.25]
-// let s1 = 15
-// gps s1 x1 // 74
-
-// let x2 = [0.0; 0.23; 0.46; 0.69; 0.92; 1.15; 1.38; 1.61]
-// let s2 = 20
-// gps s2 x2 // 41
-
-// let x3 = [0.0; 0.11; 0.22; 0.33; 0.44; 0.65; 1.08; 1.26; 1.68; 1.89; 2.1; 2.31; 2.52; 3.25]
-// let s3 = 12
-// gps s3 x3 // 219
-
-// gps 12 []
-// gps 12 [5.5]
-
-// Best answer:
-// let rec gps (s: int) (l: list<double>): int =
-//     match l with
-//     | [] -> 0
-//     | _ :: [] -> 0
-//     | a :: b :: x -> max (int((b - a) * 3600.0 / double(s))) (gps s (b :: x))
+    | [] | [_] -> 0
+    | initialPoint :: records -> doGps records initialPoint 0.0
