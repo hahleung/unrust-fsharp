@@ -1,11 +1,19 @@
 # Eclair Fsharp
 
-Learning F#
+Learning F# :zap:.
 
 ## F# setup
 
-WIP
+- [F#](https://docs.microsoft.com/en-us/dotnet/fsharp/get-started/get-started-vscode?tabs=macos)
 
 ## Run the stranger things
 
-WIP
+- `alt + enter` for a code block
+- `alt + /` for a line of code
+
+## Cheat sheet
+
+```
+System.Console.WriteLine "here"
+findNb(4183059834009UL) |> printfn "%A" // 2022
+```
