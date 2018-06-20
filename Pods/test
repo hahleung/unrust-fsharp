@@ -1,0 +1,4 @@
+#!/bin/sh
+dotnet restore tests/Pods.Tests
+dotnet build tests/Pods.Tests
+dotnet test tests/Pods.Tests

@@ -1,0 +1,4 @@
+#!/bin/sh
+paket install
+dotnet restore src/Pods
+dotnet build src/Pods

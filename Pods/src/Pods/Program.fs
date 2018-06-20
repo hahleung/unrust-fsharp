@@ -8,6 +8,7 @@ open Microsoft.AspNetCore.Hosting
 open Microsoft.Extensions.Logging
 open Microsoft.Extensions.DependencyInjection
 open Giraffe
+open FSharp.Data
 
 // ---------------------------------
 // Models
@@ -50,17 +51,27 @@ module Views =
 // ---------------------------------
 
 let indexHandler (name : string) =
-    let greetings = sprintf "Hello %s, from Giraffe!" name
+    let greetings = sprintf "Hello %s, from Hervito!" name
     let model     = { Text = greetings }
     let view      = Views.index model
     htmlView view
+
+type Pod = { Name : string; Status  : string }
+type Data = { Type : string; Attributes : Pod list }
+type Json = { Data : Data }
+
+let credential = { Name = "Credentials Api"; Status  = "Running" }
+let leadStore = { Name = "leadStore"; Status  = "Terminating" }
+
+let attributes = [credential; leadStore]
+let data = { Type = "pods"; Attributes = attributes }
+let staticResponse = { Data = data }
 
 let webApp =
     choose [
         GET >=>
             choose [
-                route "/" >=> indexHandler "world"
-                routef "/hello/%s" indexHandler
+                route "/status" >=> json staticResponse
             ]
         setStatusCode 404 >=> text "Not Found" ]
 
