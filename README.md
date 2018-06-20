@@ -39,5 +39,5 @@ dotnet run
 
 ```
 dotnet new -i "giraffe-template::*"
-dotnet new giraffe -lang F# -U
+dotnet new giraffe -lang F# --UsePaket --IncludeTests
 ```
