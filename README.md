@@ -17,3 +17,27 @@ Learning F# :zap:.
 System.Console.WriteLine "here"
 findNb(4183059834009UL) |> printfn "%A" // 2022
 ```
+
+## Create a Suave project
+
+### Seed
+
+- `CMD + SHIFT + P` -> `F#: New Project`
+- Directory -> `.`
+- Name -> `Name?`
+
+### Run
+
+```
+paket install
+dotnet restore
+dotnet build
+dotnet run
+```
+
+## Create giraffe project
+
+```
+dotnet new -i "giraffe-template::*"
+dotnet new giraffe -lang F# -U
+```
